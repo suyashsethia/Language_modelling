@@ -1,0 +1,11 @@
+['i like to eat chocolate', 'i like to eat banana', 'she likes to eat chocolate', 'she likes to eat banana', '']
+['<s>', '<s>', '<s>', 'i', 'like', 'to', 'eat', 'chocolate', '</s>']
+['<s>', '<s>', '<s>', 'i', 'like', 'to', 'eat', 'banana', '</s>']
+['<s>', '<s>', '<s>', 'she', 'likes', 'to', 'eat', 'chocolate', '</s>']
+['<s>', '<s>', '<s>', 'she', 'likes', 'to', 'eat', 'banana', '</s>']
+[]
+defaultdict(<class 'set'>, {'i': {('<s>', '<s>', '<s>')}, 'like': {('<s>', '<s>', 'i')}, 'to': {('<s>', 'she', 'likes'), ('<s>', 'i', 'like')}, 'eat': {('i', 'like', 'to'), ('she', 'likes', 'to')}, 'chocolate': {('likes', 'to', 'eat'), ('like', 'to', 'eat')}, 'banana': {('likes', 'to', 'eat'), ('like', 'to', 'eat')}, 'she': {('<s>', '<s>', '<s>')}, 'likes': {('<s>', '<s>', 'she')}})
+defaultdict(<class 'float'>, {('<s>', '<s>', '<s>'): 1, ('<s>', '<s>', 'i'): 1, ('<s>', 'i', 'like'): 1, ('i', 'like', 'to'): 1, ('like', 'to', 'eat'): 1, ('<s>', '<s>', 'she'): 1, ('<s>', 'she', 'likes'): 1, ('she', 'likes', 'to'): 1, ('likes', 'to', 'eat'): 1})
+defaultdict(<class 'int'>, {(('<s>', '<s>', '<s>'), 'i'): 2, (('<s>', '<s>', 'i'), 'like'): 2, (('<s>', 'i', 'like'), 'to'): 2, (('i', 'like', 'to'), 'eat'): 2, (('like', 'to', 'eat'), 'chocolate'): 1, (('like', 'to', 'eat'), 'banana'): 1, (('<s>', '<s>', '<s>'), 'she'): 2, (('<s>', '<s>', 'she'), 'likes'): 2, (('<s>', 'she', 'likes'), 'to'): 2, (('she', 'likes', 'to'), 'eat'): 2, (('likes', 'to', 'eat'), 'chocolate'): 1, (('likes', 'to', 'eat'), 'banana'): 1, (('<s>', '<s>', '<s>'),): 0, (('<s>', '<s>', 'i'),): 0, (('<s>', 'i', 'like'),): 0, (('i', 'like', 'to'),): 0, (('like', 'to', 'eat'),): 0, (('<s>', '<s>', 'she'),): 0, (('<s>', 'she', 'likes'),): 0, (('she', 'likes', 'to'),): 0, (('likes', 'to', 'eat'),): 0})
+defaultdict(<class 'int'>, {('<s>', '<s>', '<s>'): 4, ('<s>', '<s>', 'i'): 2, ('<s>', 'i', 'like'): 2, ('i', 'like', 'to'): 2, ('like', 'to', 'eat'): 2, ('<s>', '<s>', 'she'): 2, ('<s>', 'she', 'likes'): 2, ('she', 'likes', 'to'): 2, ('likes', 'to', 'eat'): 2})
+-0.5

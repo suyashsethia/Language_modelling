@@ -1,0 +1,352 @@
+from Tokenizer import *
+from collections import defaultdict
+import math
+import argparse
+
+# def Word_count(words):
+#     word_count = {}
+#     for word in words:
+#         if word not in word_count:
+#             word_count[word] = 1
+#         else:
+#             word_count[word] += 1
+
+#     # print(word_count)
+#     return word_count
+
+# # Word_count(tokenize("sample.txt"))
+
+# #calculate the probability of all possible trigrams in the corpus
+
+# def trigram_prob(words):
+#     #add a <s> at the beginning 
+#     trigram_count = {}
+
+
+#     for i in range(len(words)-2):
+            
+#         # if(words[i] == '<s>'):
+#         #     words.insert(i+1, "<s>")
+#         # if </s> is present at 0 or 1 index, then skip the trigram
+#         if words[i] == '</s>' or words[i+1] == '</s>':
+#             continue
+#         trigram = tuple(words[i:i+3])
+#         if trigram not in trigram_count:
+#             trigram_count[trigram] = 1
+#         else:
+#             trigram_count[trigram] += 1
+
+#     #arrange in descending order of occurence
+#     trigram_count = sorted(trigram_count.items(), key=lambda x: x[1], reverse=True)
+#     # print(trigram_count)
+#     return trigram_count
+# # trigram_prob(tokenize("/home/suyash/Desktop/IIIT/sem_4/INLP/ASS_1/Corpus/Ulysses - James Joyce.txt"))
+
+# #calculate the probability of 4-gram
+
+# def fourgram_count(words):
+    
+#     fourgram_count = {}
+
+
+#     for i in range(len(words)-3):
+#     #add 2 <s> at the beginning of every sentence
+#         # if words[i] == '<s>' :
+#         #     words.insert(i+1, '<s>')
+#         #     words.insert(i+2, '<s>')
+
+
+
+
+#     # if </s> is present at 0 or 1 or 2 index, then skip the trigram
+    
+#         if words[i] == '</s>' or words[i+1] == '</s>' or words[i+2] == '</s>':
+#             continue
+#         fourgram = tuple(words[i:i+4])
+#         if fourgram not in fourgram_count:
+#             fourgram_count[fourgram] = 1
+#         else:
+#             fourgram_count[fourgram] += 1
+
+#     #arrange in descending order of occurence
+#     fourgram_count = sorted(fourgram_count.items(), key=lambda x: x[1], reverse=True)
+#     # print(fourgram_count)
+#     return fourgram_count
+
+# # fourgram_prob(tokenize("/home/suyash/Desktop/IIIT/sem_4/INLP/ASS_1/Corpus/Ulysses - James Joyce.txt"))
+
+# #calculate the probability of 4-gram
+
+def fourgram_prob(sentences, frequency_of_each_word,verbose =False ):
+    
+    fourgram_count = {}
+
+    if verbose:
+        print("Calculating fourgram count")
+
+
+
+    freq = defaultdict(int)
+    context_freq = defaultdict(int)
+    contexts = defaultdict(set)
+
+
+ #data for 4-gram
+    for sentence in sentences:
+
+
+        # print(sentence)
+
+        words = sentence.split()
+        words = ['<s>'] * 3 + words + ['</s>']
+        if words[0] == '<s>'and words[1]=='<s>' and words[2]=='<s>' and words[3] == '</s>':
+        #remove empty strings
+        #remove words words at inde x
+            words.remove(words[0])
+            words.remove(words[0])
+            words.remove(words[0])
+            words.remove(words[0])
+        print(words)
+
+        if(len(sentence) == 0):
+            continue
+
+
+        words = [word for word in words if word != '']
+        for i in range(len(words)-3):
+            if(frequency_of_each_word[words[i]]<3):
+                words[i]=='<unk>'
+            if(words[i+3] == '</s>'):
+                continue
+            context = tuple(words[i:i+3])
+            word = words[i+3]
+            freq[(context, word)] += 1
+            context_freq[context] += 1
+            contexts[word].add(context)   
+
+
+#calculating discount value for 4-gram
+    discount = defaultdict(float)
+
+    for context in context_freq:
+        count = context_freq[context]
+        discount[context] = min(1 , count/count +2.0*freq[(context,)])
+
+
+
+#data for 3 gram
+    for sentence in sentences:
+
+        words = sentence.split()
+        words = ['<s>'] * 2 + words + ['</s>']
+        
+        if words[0] == '<s>'and words[1]=='<s>' and words[2] == '</s>':
+        #remove empty strings
+        #remove words words at inde x
+            words.remove(words[0])
+            words.remove(words[0])
+            words.remove(words[0])
+        print(words)
+
+        if(len(sentence) == 0):
+            continue
+
+
+        words = [word for word in words if word != '']
+        for i in range(len(words)-2):
+            if(frequency_of_each_word[words[i]]<3):
+                words[i]=='<unk>'
+            if(words[i+2] == '</s>'):
+                continue
+            context = tuple(words[i:i+2])
+            word = words[i+2]
+            freq[(context, word)] += 1
+            context_freq[context] += 1
+            contexts[word].add(context)
+
+#calculating discount value for 3-gram
+    discount = defaultdict(float)
+
+    for context in context_freq:
+        count = context_freq[context]
+        discount[context] = min(1 , count/count +2.0*freq[(context,)])
+        
+#data for 2 gram
+    for sentence in sentences:    
+
+        words = sentence.split()
+        words = ['<s>'] + words + ['</s>']
+        if words[0] == '<s>' and words[1] == '</s>':
+        #remove empty strings
+        #remove words words at inde x
+            words.remove(words[0])
+            words.remove(words[0])
+        print(words)
+
+        if(len(sentence) == 0):
+            continue
+
+
+        words = [word for word in words if word != '']
+        for i in range(len(words)-1):
+            if(frequency_of_each_word[words[i]]<3):
+                words[i]=='<unk>'
+            if(words[i+1] == '</s>'):
+                continue
+            context = tuple(words[i:i+1])
+            word = words[i+1]
+            freq[(context, word)] += 1
+            context_freq[context] += 1
+            contexts[word].add(context)
+
+#calculating discount value for 2-gram  
+        discount = defaultdict(float) 
+
+        for context in context_freq:
+            count = context_freq[context]
+            discount[context] = min(1 , count/count +2.0*freq[(context,)])     
+
+        #data for unigram 
+        for sentence in sentences:
+
+            words = sentence.split()
+            words = words + ['</s>']
+            if words[0] == '</s>':
+            #remove empty strings
+            #remove words words at inde x
+                words.remove(words[0])
+            print(words)
+
+            if(len(sentence) == 0):
+                continue
+
+
+            words = [word for word in words if word != '']
+            for i in range(len(words)):
+                if(frequency_of_each_word[words[i]]<3):
+                    words[i]=='<unk>'
+                if(words[i] == '</s>'):
+                    continue
+                context = tuple(words[i:i])
+                word = words[i]
+                freq[(context, word)] += 1
+                context_freq[context] += 1
+                contexts[word].add(context)
+
+
+    print(contexts)
+    print(discount)
+    print(freq)
+    print(context_freq)
+
+    def kn_4gram_prob(context, word):
+        # print(context ,word)
+        numerator = freq[(context, word)] - discount[context]
+        denominator = context_freq[context]
+        lamda = discount[context] / context_freq[context]
+        if denominator == 0:
+            return discount* kn_3gram_backoff(context[1:], word)
+        return numerator/denominator + lamda *kn_3gram_backoff(context[1:], word)
+
+
+    def kn_3gram_backoff(context, word):
+        # print(context ,word)
+
+        if len(context) == 0:
+            return 1.0 / len(contexts[word])
+        else:
+            return kn_4gram_prob(context, word)
+
+    def kn_2gram_backoff(context, word):
+        # print(context ,word)
+
+        if len(context) == 0:
+            return 1.0 / len(contexts[word])
+        else:
+            return kn_3gram_backoff(context[1:], word)
+
+    def kn_1gram_backoff(context, word):
+        # print(context ,word)
+
+        if len(context) == 0:
+            return 1.0 / len(contexts[word])
+        else:
+            return kn_2gram_backoff(context[1:], word)
+
+    def kn_recurse_backoff(context, word):
+        # print(context ,word)
+
+        if len(context) == 3:
+            return kn_4gram_prob(context, word)
+        elif len(context) == 2:
+            return kn_3gram_backoff(context, word)
+        elif len(context) == 1:
+            return kn_2gram_backoff(context, word)
+        else:
+            return kn_1gram_backoff(context, word)
+
+    def kn_4gram_logscore(sentence):
+        
+        tokens = sentence.split()
+        padded_tokens = ['<s>', '<s>', '<s>'] + tokens + ['</s>']
+        logprob = 0.0
+        for i in range(len(padded_tokens) - 3):
+            context = tuple(padded_tokens[i:i+3])
+            token = padded_tokens[i+3]
+            logprob += math.log(kn_recurse_backoff(context, token))
+        return logprob
+    
+    return kn_4gram_prob, kn_4gram_logscore
+
+
+#written bell smoothing function
+def bell_smoothing(sentences, verbose =False ):
+        
+        fourgram_count = {}
+    
+        if verbose:
+            print("Calculating fourgram count")
+    
+    
+        freq = defaultdict(int)
+        context_freq = defaultdict(int)
+        contexts = defaultdict(set)
+    
+        for sentence in sentences:
+            # print(sentence)
+            words = sentence.split()
+            words = ['<s>'] * 3 + words + ['</s>']
+    
+            #remove consecutive <s> and </s>
+            # words = [word for word in words if word != '']
+            if words[0] == '<s>'and words[1]=='<s>' and words[2]=='<s>' and words[3] == '</s>':
+            #remove empty strings
+            #remove words words at inde 
+                words.remove(words[0])
+                words.remove(words[0])
+                words.remove(words[0])
+                words.remove(words[0])
+            print(words)
+    
+            if(len(sentence) == 0):
+                continue
+    
+    
+            words = [word for word in words if word != '']
+            for i in range(len(words)-3):
+                if(words[i+3] == '</s>'):
+                    continue
+                context = tuple(words[i:i+3])
+                word = words[i+3]
+                freq[(context, word)] += 1
+                context_freq[context] += 1
+                contexts[word].add(context)
+                
+
+#main function
+if __name__ == "__main__":
+
+    sentences = tokenize("sample.txt")['sentences']
+    freq = tokenize("sample.txt")['freq']
+    kn_4gram_prob, kn_4gram_logscore=fourgram_prob(sentences,freq )
+    print(kn_4gram_prob(('i', 'like', 'to'), 'eat'))
